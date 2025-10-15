@@ -9,6 +9,7 @@
     "category": "Inventory/Delivery",
     "depends": [
         "delivery_roulier",
+        "delivery_carrier_option",
         "product_harmonized_system",  # from OCA/intrastat-extrastat
     ],
     "website": "https://github.com/OCA/delivery-carrier",

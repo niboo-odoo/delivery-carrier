@@ -26,10 +26,13 @@ class StockQuantPackage(models.Model):
         vals = self._roulier_get_parcel(picking)
 
         def calc_package_price():
+            move_lines = picking.move_line_ids.filtered(
+                lambda ml: ml.product_id and ml.result_package_id == self
+            )
             return sum(
                 [
-                    op.product_id.lst_price * op.qty_done or op.product_qty
-                    for op in self.get_operations()
+                    ml.product_id.lst_price * (ml.quantity or ml.qty_done or ml.product_qty)
+                    for ml in move_lines
                 ]
             )
 
