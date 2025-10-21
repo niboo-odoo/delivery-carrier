@@ -32,8 +32,11 @@ class StockQuantPackage(models.Model):
         """for 'cod' option"""
         # TODO improve to take account Sale if picking created from sale
         amount = 0
-        for oper in self.get_operations():
-            amount += oper.product_id.list_price * oper.product_qty
+        move_lines = picking.move_line_ids.filtered(
+            lambda ml: ml.product_id and ml.result_package_id == self
+        )
+        for oper in move_lines:
+            amount += oper.product_id.list_price * (oper.quantity or oper.qty_done or oper.product_qty)
         return amount
 
     def _roulier_should_include_customs(self, picking):
@@ -59,7 +62,10 @@ class StockQuantPackage(models.Model):
         self.ensure_one()
 
         articles = []
-        for operation in self.get_operations():
+        move_lines = picking.move_line_ids.filtered(
+            lambda ml: ml.product_id and ml.result_package_id == self
+        )
+        for operation in move_lines:
             article = {}
             articles.append(article)
             product = operation.product_id
@@ -97,6 +103,10 @@ class StockQuantPackage(models.Model):
         for customs
         """
         total = 0.0
-        for operation in self.get_operations():
-            total += operation.get_unit_price_for_customs() * operation.product_qty
+        move_lines = picking.move_line_ids.filtered(
+            lambda ml: ml.product_id and ml.result_package_id == self
+        )
+        for operation in move_lines:
+            total += operation.get_unit_price_for_customs() * (
+                    operation.quantity or operation.qty_done or operation.product_qty)
         return total
