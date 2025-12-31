@@ -15,12 +15,12 @@ class StockPicking(models.Model):
 
     customs_category = fields.Selection(
         selection=[
-            ("gift", _("Gift")),
-            ("sample", _("Samples")),
-            ("commercial", _("Commercial Goods")),
-            ("document", _("Documents")),
-            ("other", _("Other")),
-            ("return", _("Goods return")),
+            ("gift", "Gift"),
+            ("sample", "Samples"),
+            ("commercial", "Commercial Goods"),
+            ("document", "Documents"),
+            ("other", "Other"),
+            ("return", "Goods return"),
         ],
         default="commercial",
         help="Type of sending for the customs",
